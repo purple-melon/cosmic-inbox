@@ -12,6 +12,7 @@ export default function HomePage() {
   const [newText, setNewText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [activeDraft, setActiveDraft] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function loadSparks() {
     setLoading(true);
@@ -74,6 +75,21 @@ export default function HomePage() {
       setError("Could not clarify spark.");
     } finally {
       setClarifyingId(null);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/sparks/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete spark");
+      setSparks((prev) => prev.filter((s) => s.id !== id));
+    } catch (e) {
+      console.error(e);
+      setError("Could not delete spark.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -221,6 +237,14 @@ export default function HomePage() {
                   {draftingId === spark.id
                     ? "Generating post…"
                     : "Generate post draft"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleDelete(spark.id)}
+                  disabled={deletingId === spark.id}
+                  className="inline-flex items-center rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-[11px] text-slate-400 hover:border-red-500 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60 ml-auto"
+                >
+                  {deletingId === spark.id ? "Deleting…" : "Delete"}
                 </button>
               </div>
             </div>
