@@ -217,6 +217,15 @@ export default function HomePage() {
                     ? "Archived"
                     : "Captured"}
                 </span>
+                <span className="text-[11px] text-slate-600 ml-auto">
+                  {new Date(spark.created_at).toLocaleString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit"
+                  })}
+                </span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 pt-2">
