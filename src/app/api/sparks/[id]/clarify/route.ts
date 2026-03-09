@@ -6,12 +6,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-interface RouteContext {
-  params: { id: string };
-}
-
-export async function POST(_req: Request, context: RouteContext) {
-  const { id } = context.params;
+export async function POST(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
